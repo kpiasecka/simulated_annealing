@@ -12,6 +12,9 @@ class StopCondition(ABC):
     def should_stop(self) -> bool:
         raise NotImplemented
 
+    def __str__(self) -> str:
+        return self.__class__.__name__
+
 
 class IterativeCondition(StopCondition):
     def __init__(self, n: int):
@@ -19,9 +22,9 @@ class IterativeCondition(StopCondition):
         self.i = 0  # iteration
 
     def should_stop(self) -> bool:
-        self.i += 1
         if self.i == self.n:
             return True
+        self.i += 1
         return False
 
 
@@ -76,6 +79,9 @@ class Cooling(ABC):
     def cool_down(self, temp: float) -> float:
         raise NotImplemented
 
+    def __str__(self) -> str:
+        return self.__class__.__name__
+
 
 class GeometricCooling(Cooling):
     def __init__(self, alpha: float):
@@ -103,11 +109,18 @@ class SA:
 
     def solve(self, problem_instance: ProblemInstance) -> np.array:
         self.get_random_solution(problem_instance.tasks)
+        print(f"Starting temp: {self.temp}")
+        print(f"Cooling pattern: {self.cooling}")
+        print(f"Stop condition: {self.stop_condition}")
+        print(f"Starting best solution: {self.best_solution}\n")
         while not self.stop_condition.should_stop():
             next_solution = self.move(self.best_solution)
             if self.should_accept(next_solution):
                 self.best_solution = next_solution
+                print(f"Current best solution: {self.best_solution}")
             self.temp = self.cooling.cool_down(self.temp)
+            print(f"Current temp: {self.temp}\n")
+        print("#### END ####")
         return self.best_solution
 
     def get_random_solution(self, tasks: int) -> None:
@@ -130,4 +143,7 @@ class SA:
             return True  # its better
         else:
             probability = math.exp(-(next_solution_value - best_solution_value) / self.temp)
-            return np.random.rand() <= probability
+            accepted = np.random.rand() <= probability
+            print(f"Found worse solution. Probability of accepting: {probability * 100:.2f}%\nAccepted: {accepted}")
+
+            return accepted
