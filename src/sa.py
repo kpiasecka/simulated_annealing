@@ -5,21 +5,10 @@ from typing import List
 
 ProblemInstance = List[List[int]]
 
+
 class StopCondition(ABC):
     @abstractmethod
     def should_stop(self) -> bool:
-        raise NotImplemented
-
-
-class Criteria(ABC):
-    @abstractmethod
-    def get_value(self, problem_instance: ProblemInstance) -> int:
-        raise NotImplemented
-
-
-class Cooling(ABC):
-    @abstractmethod
-    def cool_down(self, temp: float) -> float:
         raise NotImplemented
 
 
@@ -33,6 +22,44 @@ class IterativeCondition(StopCondition):
         if self.i == self.n:
             return True
         return False
+
+
+class Criteria(ABC):
+    @abstractmethod
+    def get_value(self, problem_instance: ProblemInstance) -> int:
+        raise NotImplemented
+
+
+class MakeSpan(Criteria):
+    def get_value(self, problem_instance: ProblemInstance) -> int:
+        pass
+
+
+class FlowTime(Criteria):
+    def get_value(self, problem_instance: ProblemInstance) -> int:
+        pass
+
+
+class Cooling(ABC):
+    @abstractmethod
+    def cool_down(self, temp: float) -> float:
+        raise NotImplemented
+
+
+class GeometricCooling(Cooling):
+    def __int__(self, alpha: float):
+        self.alpha = alpha
+
+    def cool_down(self, temp: float) -> float:
+        return temp * self.alpha
+
+
+class LinearCooling(Cooling):
+    def __int__(self, beta: float):
+        self.beta = beta
+
+    def cool_down(self, temp: float) -> float:
+        return temp - self.beta
 
 
 class SA:
