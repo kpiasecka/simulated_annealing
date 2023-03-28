@@ -1,6 +1,9 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+from typing import List
 
+
+ProblemInstance = List[List[int]]
 
 class StopCondition(ABC):
     @abstractmethod
@@ -10,7 +13,7 @@ class StopCondition(ABC):
 
 class Criteria(ABC):
     @abstractmethod
-    def get_value(self) -> int:
+    def get_value(self, problem_instance: ProblemInstance) -> int:
         raise NotImplemented
 
 
@@ -33,10 +36,12 @@ class IterativeCondition(StopCondition):
 
 
 class SA:
-    def __int__(self, temp: float, cooling: Cooling, stop_condition: StopCondition, ):
+    def __int__(self, temp: float, cooling: Cooling, stop_condition: StopCondition, criteria: Criteria):
         self.temp = temp
         self.cooling = cooling
         self.stop_condition = stop_condition
+        self.criteria = criteria
 
-    def solve(self, problem_instance: []):
+    def solve(self, problem_instance: ProblemInstance):
         pass
+
