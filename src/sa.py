@@ -96,7 +96,9 @@ class LinearCooling(Cooling):
         self.beta = beta
 
     def cool_down(self, temp: float) -> float:
-        return temp - self.beta
+        new_temp = temp - self.beta
+
+        return new_temp if new_temp > 0 else .0
 
 
 class SA:
